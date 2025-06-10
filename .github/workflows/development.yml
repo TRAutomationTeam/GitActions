@@ -10,12 +10,11 @@ env:
   # Replace with your Orchestrator Values 
   PROJECT_NAME: TR_GitHubActions_Pipeline_POC
   PROJECT_FOLDER: ${{ github.action_path }}
-  ORCH_URL: https://cloud.uipath.com/surepymsxjta/DefaultTenant/
+  ORCH_URL: https://cloud.uipath.com/
   ORCH_TENANT: ${{ secrets.UIPATH_TENANT_ID }}
   ORCH_CLIENT_ID: ${{ secrets.UIPATH_CLIENT_ID }}
   ORCH_USER_KEY: ${{ secrets.UIPATH_USER_KEY }}
   ORCH_ACC_NAME: ${{ secrets.UIPATH_ACCOUNT_ID }}
-  ORCH_FOLDER: Automation
 
 jobs:
   print-details:
@@ -68,7 +67,7 @@ jobs:
           name: Artifacts
       - name: Publish Nuget Package to DEV
         shell: pwsh
-        run: ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder ${{env.ORCH_FOLDER}} 
+        run: ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit Automation
    
   test-uipath-published-package:
     needs: publish-uipath-nuget-package
