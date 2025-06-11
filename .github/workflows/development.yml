@@ -67,7 +67,7 @@ jobs:
           name: Artifacts
       - name: Publish Nuget Package to DEV
         shell: pwsh
-        run: ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -orchestrator_user rajesh.karumuru@thomsonreuters.com -orchestrator_pass Puggie123$ -folder_organization_unit Automation
+        run: ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -orchestrator_user rajesh.karumuru@thomsonreuters.com -orchestrator_pass Puggie123$
    
   test-uipath-published-package:
     needs: publish-uipath-nuget-package
