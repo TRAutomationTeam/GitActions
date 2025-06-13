@@ -37,9 +37,29 @@ jobs:
       - name: Runner workspace path
         run: |
           echo "Cleaning up previous run"
-          rm -rf "${{ github.workspace }}" 
-   
+          rm -rf "${{ github.workspace }}"
+
+  build-uipath-nuget-package:
+    # You should be able to run on windows 2019 or windows latest
+    needs: cleaner
+    runs-on: self-hosted
+    steps: 
+      - name: Check out repository code
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        uses: actions/checkout@v4
+      - name: Build Nuget Package
+        shell: powershell
+        run: ${{ github.workspace }}\scripts\UiPathPack.ps1 ${{ github.workspace }}\project.json -destination_folder ${{ github.workspace }}\package
+      - name: Upload UiPath Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Artifacts
+          path: |
+           package/*.*
+           scripts/*.ps1
+           
   publish-uipath-nuget-package:
+    needs: build-uipath-nuget-package
     runs-on: self-hosted
     steps: 
       - name: Download UiPath Artifacts
@@ -50,3 +70,28 @@ jobs:
         shell: powershell
         run: ${{ github.workspace }}\scripts\UiPathDeploy.ps1 ${{ github.workspace }}\package ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}} -folder_organization_unit Automation/Testing_TaxCaddy/Rajesh 
   
+  test-uipath-published-package:
+    needs: publish-uipath-nuget-package
+    runs-on: self-hosted
+    steps: 
+      - name: Download UiPath Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Artifacts
+      - name: Test the Package With Test Cases 
+        run: ${{ github.workspace }}\scripts\\UiPathRunTest.ps1  ${{env.ORCH_URL}} ${{env.ORCH_TENANT}} -UserKey ${{env.ORCH_USER_KEY}} -account_name ${{env.ORCH_ACC_NAME}}
+  
+  # Create Pull Request for Merge & Review
+  create-pull-request:
+    needs: test-uipath-published-package
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: pull-request
+        uses: repo-sync/pull-request@v4
+        with:
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_label: "feature, automated pr"
+          pr_title: "Pull Request From Github Action"
