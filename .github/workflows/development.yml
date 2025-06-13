@@ -42,7 +42,7 @@ jobs:
   build-uipath-nuget-package:
     # You should be able to run on windows 2019 or windows latest
     needs: cleaner
-    runs-on: windows-latest
+    runs-on: self-hosted
     steps: 
       - name: Check out repository code
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -59,7 +59,7 @@ jobs:
            scripts/*.ps1
   publish-uipath-nuget-package:
     needs: build-uipath-nuget-package
-    runs-on: windows-latest
+    runs-on: self-hosted
     steps: 
       - name: Download UiPath Artifacts
         uses: actions/download-artifact@v4
@@ -71,7 +71,7 @@ jobs:
    
   test-uipath-published-package:
     needs: publish-uipath-nuget-package
-    runs-on: windows-latest  
+    runs-on: self-hosted
     steps: 
       - name: Download UiPath Artifacts
         uses: actions/download-artifact@v4
@@ -83,7 +83,7 @@ jobs:
   # Create Pull Request for Merge & Review
   create-pull-request:
     needs: test-uipath-published-package
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
