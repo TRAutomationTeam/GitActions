@@ -40,7 +40,6 @@ jobs:
           rm -rf "${{ github.workspace }}" 
    
   publish-uipath-nuget-package:
-    needs: build-uipath-nuget-package
     runs-on: self-hosted
     steps: 
       - name: Download UiPath Artifacts
