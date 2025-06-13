@@ -18,7 +18,7 @@ env:
 
 jobs:
   print-details:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: echo-default-env-variables
         run: |
@@ -32,7 +32,7 @@ jobs:
           echo "GITHUB_SHA: ${GITHUB_SHA}"
           echo "GITHUB_REF: ${GITHUB_REF}"
   cleaner:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Runner workspace path
         run: |
