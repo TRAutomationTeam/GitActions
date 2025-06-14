@@ -73,7 +73,7 @@ jobs:
   
   # Create Pull Request for Merge & Review
   create-pull-request:
-    needs: build-uipath-nuget-package
+    needs: publish-uipath-nuget-package
     runs-on: self-hosted
     steps:
       - name: Check out repository code
